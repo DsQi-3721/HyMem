@@ -1,0 +1,12 @@
+# A-MEM baseline dependencies
+# Install with: pip install -r requirements_amem.txt
+# Required only when running --framework amem (NOT needed for HyMem itself).
+
+sentence-transformers>=2.2.2
+chromadb>=0.4.22
+rank_bm25>=0.2.2
+nltk>=3.8.1
+
+# Note: openai>=1.3.7 is already required by the main HyMem stack, so it's
+# omitted here. We do NOT install litellm — it's only needed for upstream's
+# Ollama backend, which we replace with our OpenAI-compatible LLM controller.

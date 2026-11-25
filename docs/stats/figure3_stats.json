@@ -1,0 +1,163 @@
+{
+  "panel_a_token_pareto": {
+    "hymem": {
+      "x_q1": 39114.0,
+      "x_median": 111220.0,
+      "x_q3": 282589.0,
+      "acc_mean": 0.6666666666666666,
+      "acc_lo": 0.6194225721784777,
+      "acc_hi": 0.7112860892388452,
+      "n": 381
+    },
+    "resum": {
+      "x_q1": 107397.0,
+      "x_median": 235764.0,
+      "x_q3": 405112.5,
+      "acc_mean": 0.6062992125984252,
+      "acc_lo": 0.5275590551181102,
+      "acc_hi": 0.6771653543307087,
+      "n": 127
+    },
+    "thread": {
+      "x_q1": 23209.0,
+      "x_median": 64457.0,
+      "x_q3": 218817.0,
+      "acc_mean": 0.3543307086614173,
+      "acc_lo": 0.2755905511811024,
+      "acc_hi": 0.4409448818897638,
+      "n": 127
+    },
+    "amem": {
+      "x_q1": 124421.5,
+      "x_median": 353093.0,
+      "x_q3": 655383.0,
+      "acc_mean": 0.49606299212598426,
+      "acc_lo": 0.4015748031496063,
+      "acc_hi": 0.5749999999999998,
+      "n": 127
+    },
+    "react": {
+      "x_q1": 163887.5,
+      "x_median": 346982.0,
+      "x_q3": 745166.5,
+      "acc_mean": 0.5669291338582677,
+      "acc_lo": 0.48031496062992124,
+      "acc_hi": 0.6535433070866141,
+      "n": 127
+    },
+    "summary": {
+      "x_q1": 188620.5,
+      "x_median": 509152.0,
+      "x_q3": 1059873.5,
+      "acc_mean": 0.5118110236220472,
+      "acc_lo": 0.4251968503937008,
+      "acc_hi": 0.5986220472440944,
+      "n": 127
+    }
+  },
+  "panel_b_toolcalls_pareto": {
+    "hymem": {
+      "x_q1": 10.0,
+      "x_median": 28.0,
+      "x_q3": 67.0,
+      "acc_mean": 0.6666666666666666,
+      "acc_lo": 0.6194225721784777,
+      "acc_hi": 0.7112860892388452,
+      "n": 381
+    },
+    "resum": {
+      "x_q1": 8.5,
+      "x_median": 15.0,
+      "x_q3": 22.0,
+      "acc_mean": 0.6062992125984252,
+      "acc_lo": 0.5275590551181102,
+      "acc_hi": 0.6771653543307087,
+      "n": 127
+    },
+    "thread": {
+      "x_q1": 1.0,
+      "x_median": 3.0,
+      "x_q3": 11.5,
+      "acc_mean": 0.3543307086614173,
+      "acc_lo": 0.2755905511811024,
+      "acc_hi": 0.4409448818897638,
+      "n": 127
+    },
+    "amem": {
+      "x_q1": 11.0,
+      "x_median": 17.0,
+      "x_q3": 28.0,
+      "acc_mean": 0.49606299212598426,
+      "acc_lo": 0.4015748031496063,
+      "acc_hi": 0.5749999999999998,
+      "n": 127
+    },
+    "react": {
+      "x_q1": 14.0,
+      "x_median": 21.0,
+      "x_q3": 34.5,
+      "acc_mean": 0.5669291338582677,
+      "acc_lo": 0.48031496062992124,
+      "acc_hi": 0.6535433070866141,
+      "n": 127
+    },
+    "summary": {
+      "x_q1": 16.5,
+      "x_median": 25.0,
+      "x_q3": 41.0,
+      "acc_mean": 0.5118110236220472,
+      "acc_lo": 0.4251968503937008,
+      "acc_hi": 0.5986220472440944,
+      "n": 127
+    }
+  },
+  "panel_c_progression_end": {
+    "hymem": {
+      "start_raw": 1532.0,
+      "end_raw_median": 14597.0,
+      "end_growth_median": 13065.0,
+      "end_growth_q1": 4840.0,
+      "end_growth_q3": 37951.0
+    },
+    "hymem_total": {
+      "start_raw": 1532.0,
+      "end_raw_median": 158684.0,
+      "end_growth_median": 157152.0,
+      "end_growth_q1": 54503.0,
+      "end_growth_q3": 357902.0
+    },
+    "resum": {
+      "start_raw": 2263.0,
+      "end_raw_median": 248951.0,
+      "end_growth_median": 246688.0,
+      "end_growth_q1": 118380.0,
+      "end_growth_q3": 410190.5
+    },
+    "amem": {
+      "start_raw": 2133.0,
+      "end_raw_median": 320060.0,
+      "end_growth_median": 317927.0,
+      "end_growth_q1": 139006.0,
+      "end_growth_q3": 677418.0
+    },
+    "react": {
+      "start_raw": 2126.0,
+      "end_raw_median": 362941.0,
+      "end_growth_median": 360815.0,
+      "end_growth_q1": 208580.0,
+      "end_growth_q3": 785142.0
+    }
+  },
+  "stat_legend": {
+    "n_definition": "Per-task-runs counts; pass@3 methods: 3 runs \u00d7 127 tasks = 381; ReAct: single run \u00d7 127 = 127",
+    "panel_a_x": "median(total_tokens) per method across all task-runs; horizontal whisker = IQR",
+    "panel_a_y": "mean(Pass@1) per method; vertical whisker = 95% bootstrap CI",
+    "panel_b_x": "median(tool_calls_atomic); IQR whisker",
+    "panel_b_y": "mean(Pass@1); 95% bootstrap CI whisker",
+    "panel_c_curves": "per-turn cumulative context tokens, reconstructed by tokenizing message prefixes with Qwen2.5-7B-Instruct; mean \u00b1 95% bootstrap CI across tasks per method, interpolated to 21 grid points on [0, 1] task-progress.",
+    "panel_c_methods": "HyMem-Coord uses Coordination-Layer messages (role=planner); others use the entire chat stream (their single-tier baseline). Thread omitted (sub-thread state not in main trace).",
+    "react_note": "ReAct = fig1_pilot/react/ run (eval_results.metadata.framework=react); single run only \u2014 Pass@1 not run-averaged.",
+    "source_data": "HyMem/data/figure3/per_task.csv, HyMem/data/figure3/context_progression.csv",
+    "test": "none \u2014 descriptive comparison only."
+  }
+}

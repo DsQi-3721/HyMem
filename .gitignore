@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Local secrets & keys
+.env
+*.env
+scripts/serper_keys.json
+scripts/env_eval_local.sh
+
+# Large local artifacts & experiment logs
+logs/
+runs/
+artifacts/
+results/gaia/
+results/bcplus/
+results/vanilla/
+*.tiff
+*.parquet
+
+# OS & editor
+.DS_Store
+.scratch/
+.agents/

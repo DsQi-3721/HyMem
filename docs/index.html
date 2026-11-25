@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HyMem — Hierarchical Context Management for Long-Horizon Agents</title>
+  <style>
+    :root {
+      --bg: #fafaf8;
+      --surface: #ffffff;
+      --ink: #18181b;
+      --muted: #52525b;
+      --subtle: #71717a;
+      --border: #e4e4e7;
+      --accent: #2f6f4e;
+      --accent-soft: #edf6f0;
+      --warn: #b45309;
+      --danger: #b91c1c;
+      --danger-soft: #fef2f2;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--sans);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    .container { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+    header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(24px, 3.6vw, 34px);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+    }
+    .subtitle {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 780px;
+    }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      color: var(--ink);
+      background: var(--surface);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn:hover { border-color: #a1a1aa; background: #f4f4f5; }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn.primary:hover { background: #265b3f; }
+
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin: 28px 0 0;
+    }
+    .metric-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .metric-val { font-size: 24px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+    .metric-val span { color: var(--accent); }
+    .metric-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+    section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+    section:last-of-type { border-bottom: none; }
+    h2 { margin: 0 0 10px; font-size: 22px; letter-spacing: -0.01em; }
+    .lead { margin: 0 0 22px; color: var(--muted); font-size: 15px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    /* Interactive Stepper */
+    .stepper-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .seg-group { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+    .seg-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: var(--sans);
+    }
+    .seg-btn.active {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .trace-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--bg);
+    }
+    .trace-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-family: var(--mono);
+    }
+    .pill.bad { background: var(--danger-soft); color: var(--danger); }
+    .pill.good { background: var(--accent-soft); color: var(--accent); }
+    .ctx-bar-wrap {
+      height: 18px;
+      background: #e4e4e7;
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      margin: 10px 0 8px;
+    }
+    .ctx-signal { background: var(--accent); height: 100%; transition: width 0.25s; }
+    .ctx-noise { background: #d4d4d8; height: 100%; transition: width 0.25s; }
+    .ctx-noise-bad { background: #fca5a5; height: 100%; transition: width 0.25s; }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      font-family: var(--mono);
+      margin-bottom: 10px;
+    }
+    .trace-log {
+      font-size: 13px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 12px;
+      color: var(--ink);
+    }
+    .trace-log code { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+    .trace-sub {
+      margin-top: 8px;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* Benchmark Interactive Bars */
+    .bench-row {
+      display: grid;
+      grid-template-columns: 110px 1fr 72px 92px;
+      gap: 12px;
+      align-items: center;
+      padding: 9px 0;
+      border-bottom: 1px solid #f4f4f5;
+      font-size: 14px;
+    }
+    .bench-row:last-child { border-bottom: none; }
+    .bench-row.head {
+      font-size: 12px;
+      color: var(--subtle);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+    }
+    .bar-track { height: 12px; background: #f4f4f5; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+    .num { font-family: var(--mono); text-align: right; font-size: 13px; }
+    .method-name.ours { font-weight: 700; color: var(--accent); }
+
+    /* Figures */
+    figure { margin: 0; }
+    .fig-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    .fig-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .fig-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 4px;
+      cursor: zoom-in;
+    }
+    figcaption {
+      margin-top: 10px;
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+
+    pre {
+      background: #f4f4f5;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      margin: 0;
+    }
+    footer {
+      padding: 28px 0 44px;
+      color: var(--subtle);
+      font-size: 13px;
+      text-align: center;
+    }
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.86);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 96vw; max-height: 92vh; border-radius: 6px; background: #fff; padding: 8px; }
+    @media (max-width: 640px) {
+      .bench-row { grid-template-columns: 82px 1fr 58px 72px; font-size: 12.5px; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <div class="eyebrow">Long-Horizon LLM Agent · Context Engineering</div>
+    <h1>HyMem: Hierarchical Context Management for Long-Horizon Agents via Information Isolation</h1>
+    <p class="subtitle">
+      一个无需微调模型权重的分层上下文管理框架。将高层规划与工具执行、中间推理从入口处解耦隔离，只通过结构化接口回传结论与证据，在有限窗口内维持长程任务的目标聚焦与低 Token 成本。
+    </p>
+    <div class="links">
+      <a class="btn primary" href="https://github.com/DsQi-3721/HyMem" target="_blank" rel="noopener">GitHub 代码仓库</a>
+      <a class="btn" href="https://arxiv.org/abs/2608.15703" target="_blank" rel="noopener">arXiv:2608.15703</a>
+      <a class="btn" href="https://github.com/DsQi-3721/HyMem/blob/main/docs/baselines.md" target="_blank" rel="noopener">基线复现说明</a>
+    </div>
+
+    <div class="metrics-strip">
+      <div class="metric-card">
+        <div class="metric-val"><span>66.7%</span></div>
+        <div class="metric-label">GAIA Pass@1（ReSum 60.6% / ReAct 56.7%）</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val"><span>-52.8%</span></div>
+        <div class="metric-label">GAIA 中位 Token（111.2k vs ReSum 235.8k）</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val"><span>61.3%</span></div>
+        <div class="metric-label">BrowseComp-Plus Pass@1（ReSum 43.3%）</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-val"><span>14.6k</span></div>
+        <div class="metric-label">规划层终态上下文（ReAct 362.9k）</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section id="demo-isolation">
+    <h2>交互演示一：上下文隔离过程对比（ReAct vs HyMem）</h2>
+    <p class="lead">
+      点击下方任务进度节点，观察同一复杂多跳检索任务中，单上下文 ReAct 与分层隔离 HyMem 在主上下文长度、关键事实密度和信息流上的差异（数据来自 GAIA 真实轨迹统计）。
+    </p>
+    <div class="card">
+      <div class="stepper-controls">
+        <div style="font-size:13.5px; color:var(--muted);">选择任务推进阶段：</div>
+        <div class="seg-group" id="stage-buttons">
+          <button class="seg-btn active" data-stage="0">阶段 1：初始拆解</button>
+          <button class="seg-btn" data-stage="1">阶段 2：首轮检索</button>
+          <button class="seg-btn" data-stage="2">阶段 3：多跳探索</button>
+          <button class="seg-btn" data-stage="3">阶段 4：证据核验</button>
+          <button class="seg-btn" data-stage="4">阶段 5：终局输出</button>
+        </div>
+      </div>
+
+      <div class="compare-grid">
+        <div class="trace-box">
+          <div class="trace-head">
+            <span>ReAct（扁平单上下文）</span>
+            <span class="pill bad" id="react-badge">Step 1 · 1.6% 关键信息</span>
+          </div>
+          <div class="stat-row">
+            <span id="react-ctx">上下文长度：2.1k tokens</span>
+            <span id="react-status">状态：进行中</span>
+          </div>
+          <div class="ctx-bar-wrap" title="绿色为关键事实占比，红色为冗余执行日志">
+            <div class="ctx-signal" id="react-sig" style="width:4%"></div>
+            <div class="ctx-noise-bad" id="react-noi" style="width:96%"></div>
+          </div>
+          <div class="trace-log" id="react-log"></div>
+          <div class="trace-sub" id="react-note"></div>
+        </div>
+
+        <div class="trace-box">
+          <div class="trace-head">
+            <span>HyMem（分层上下文隔离）</span>
+            <span class="pill good" id="hymem-badge">Step 1 · 3.6% 关键信息</span>
+          </div>
+          <div class="stat-row">
+            <span id="hymem-ctx">规划层上下文：0.9k tokens</span>
+            <span id="hymem-status">状态：进行中</span>
+          </div>
+          <div class="ctx-bar-wrap" title="绿色为关键事实占比，灰色为结构化规划信息">
+            <div class="ctx-signal" id="hymem-sig" style="width:12%"></div>
+            <div class="ctx-noise" id="hymem-noi" style="width:88%"></div>
+          </div>
+          <div class="trace-log" id="hymem-log"></div>
+          <div class="trace-sub" id="hymem-note"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo-bench">
+    <h2>交互演示二：多基线准确率与成本对比</h2>
+    <p class="lead">
+      切换数据集查看 HyMem 与 ReSum、ReAct、Summary、A-Mem、Thread 五类上下文/记忆管理方法的实测结果（源自仓库 <code>docs/stats/</code>）。
+    </p>
+    <div class="card">
+      <div class="stepper-controls">
+        <div class="seg-group" id="bench-buttons">
+          <button class="seg-btn active" data-bench="gaia">GAIA（127 文本任务）</button>
+          <button class="seg-btn" data-bench="bcp">BrowseComp-Plus（150 任务）</button>
+        </div>
+        <div style="font-size:12.5px; color:var(--subtle);" id="bench-caption">
+          对比指标：Pass@1（越高越好）与单任务中位 Token 消耗
+        </div>
+      </div>
+
+      <div id="bench-table"></div>
+    </div>
+  </section>
+
+  <section id="figures">
+    <h2>架构与核心实验图表</h2>
+    <p class="lead">点击任意图表可放大查看原始清晰图。</p>
+    <div class="fig-grid">
+      <div class="fig-card">
+        <figure>
+          <img src="figures/architecture.png" alt="HyMem Architecture" class="zoomable">
+          <figcaption><strong>图 1 · HyMem 分层隔离架构：</strong>规划协调层（Coordination Layer）与执行层（Actor Layer）、独立推理工作区（Isolated Reasoning）上下文物理隔离，经结构化接口回传结论，由记忆模块按 Episode / Working / Tool 分层注入。</figcaption>
+        </figure>
+      </div>
+      <div class="fig-card">
+        <figure>
+          <img src="figures/dilution.png" alt="Key Information Dilution" class="zoomable">
+          <figcaption><strong>图 2 · 关键信息密度对比：</strong>ReAct 随推理步数推进，关键事实占比持续维持在 ~2.8% 以下；单任务对照中，ReAct 上下文膨胀至 60k（关键信息 1.9%，失败），HyMem 保持在 3.2k（关键信息 12.8%，成功）。</figcaption>
+        </figure>
+      </div>
+      <div class="fig-card">
+        <figure>
+          <img src="figures/gaia_pareto_progression.png" alt="GAIA Pareto and Context Growth" class="zoomable">
+          <figcaption><strong>图 3 · GAIA 帕累托效率与上下文增长曲线：</strong>HyMem 在更低中位 Token（111.2k）下取得最高 Pass@1（66.7%）；右图显示 HyMem 规划层上下文终态中位数仅 14.6k，比 ReAct（362.9k）与 ReSum（249.0k）低一个数量级。</figcaption>
+        </figure>
+      </div>
+      <div class="fig-card">
+        <figure>
+          <img src="figures/cross_benchmark.png" alt="Cross Benchmark Comparison" class="zoomable">
+          <figcaption><strong>图 4 · 跨基准对比（GAIA 与 BrowseComp-Plus）：</strong>实心标记为 GAIA，空心标记为 BrowseComp-Plus。HyMem 在两个基准上均位于高准确率区域。</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="citation">
+    <h2>BibTeX 引用</h2>
+    <pre>@article{wang2026hymem,
+  title   = {HyMem: Hierarchical Context Management for Long-Horizon Agents via Information Isolation},
+  author  = {Wang, Xinqi and others},
+  journal = {arXiv preprint arXiv:2608.15703},
+  year    = {2026}
+}</pre>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    HyMem Project Page · <a href="https://github.com/DsQi-3721/HyMem" style="color:inherit;">github.com/DsQi-3721/HyMem</a>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox"><img id="lightbox-img" alt="Zoomed Figure"></div>
+
+<script>
+const STAGES = [
+  {
+    react: {
+      badge: "Step 1 · 1.6% 关键信息", ctx: "上下文：2.1k tokens", status: "状态：进行中", sig: 5,
+      log: "直接把问题与首次网页搜索的完整原始返回拼接进主上下文，规划指令与网页 HTML 文本混在一起。",
+      note: "起步阶段上下文较短，尚能聚焦任务目标。"
+    },
+    hymem: {
+      badge: "Step 1 · 3.6% 关键信息", ctx: "规划层：0.9k tokens", status: "状态：进行中", sig: 12,
+      log: "<code>Coordination Layer</code> 拆解出首个核查子目标并派发至 <code>Actor Layer</code>；原始网页内容留存在执行层。",
+      note: "主规划上下文只保留任务约束和子目标清单。"
+    }
+  },
+  {
+    react: {
+      badge: "Step 5 · 5.8% 关键信息", ctx: "上下文：5.4k tokens", status: "状态：进行中", sig: 16,
+      log: "连续多次检索与页面抓取结果全部追加到同一对话流，历史无效试错仍占据前面窗口。",
+      note: "开始出现早期约束距离当前生成位置变远的现象。"
+    },
+    hymem: {
+      badge: "Step 2 · 9.2% 关键信息", ctx: "规划层：1.7k tokens", status: "状态：进行中", sig: 28,
+      log: "执行层通过 <code>RESULTS / RETURN</code> 只回传已核实的实体与时间线索，冗余网页正文被就地丢弃。",
+      note: "有效事实持续沉淀，但上下文增速平缓。"
+    }
+  },
+  {
+    react: {
+      badge: "Step 10 · 0.8% 关键信息", ctx: "上下文：44.8k tokens", status: "状态：噪声淹没", sig: 3,
+      log: "某次长网页抓取一次性灌入 38k+ 原始文本，核心事实密度骤降至 0.8%，模型开始遗忘早期限定条件并重复搜索。",
+      note: "典型上下文稀释：高价值信号被低价值执行日志淹没。"
+    },
+    hymem: {
+      badge: "Step 3 · 8.9% 关键信息", ctx: "规划层：2.0k tokens", status: "状态：子区推理", sig: 28,
+      log: "复杂多跳子问题路由至 <code>Isolated Reasoning</code> 独立工作区完成多轮交叉核对，主上下文完全不受干扰。",
+      note: "大量探索开销被局部化在隔离工作区内部。"
+    }
+  },
+  {
+    react: {
+      badge: "Step 19 · 1.7% 关键信息", ctx: "上下文：54.2k tokens", status: "状态：反复重试", sig: 5,
+      log: "历史轨迹超过 5 万 token，模型在相似关键词间来回检索，难以回溯早期已验证过的线索。",
+      note: "即使事后做摘要压缩，也容易在混合序列中误删关键链路。"
+    },
+    hymem: {
+      badge: "Step 4 · 12.0% 关键信息", ctx: "规划层：2.7k tokens", status: "状态：记忆注入", sig: 38,
+      log: "<code>Memory Management</code> 更新 Episode / Working / Tool 三类结构化记忆，仅向规划层注入阶段结论与待验缺口。",
+      note: "关键信息密度反而随验证推进上升至 12.0%。"
+    }
+  },
+  {
+    react: {
+      badge: "Step 24 · 1.9% 关键信息", ctx: "上下文：59.4k tokens", status: "结果：Score = 0", sig: 6,
+      log: "上下文接近 60k tokens，遗漏原始题干中的时间与角色约束，最终输出错误答案。",
+      note: "总耗时与 Token 成本高，但核心目标已在长序列中漂移。"
+    },
+    hymem: {
+      badge: "Step 5 · 12.8% 关键信息", ctx: "规划层：3.2k tokens", status: "结果：Score = 1", sig: 42,
+      log: "规划层基于高密度结构化证据完成终局核验并直接给出正确答案，主上下文终态仅 3.2k tokens。",
+      note: "GAIA 全量 127 题中，HyMem 规划层终态中位数仅 14.6k（ReAct 为 362.9k）。"
+    }
+  }
+];
+
+function renderStage(idx) {
+  const s = STAGES[idx];
+  document.getElementById("react-badge").textContent = s.react.badge;
+  document.getElementById("react-ctx").textContent = s.react.ctx;
+  document.getElementById("react-status").textContent = s.react.status;
+  document.getElementById("react-sig").style.width = s.react.sig + "%";
+  document.getElementById("react-noi").style.width = (100 - s.react.sig) + "%";
+  document.getElementById("react-log").innerHTML = s.react.log;
+  document.getElementById("react-note").textContent = s.react.note;
+
+  document.getElementById("hymem-badge").textContent = s.hymem.badge;
+  document.getElementById("hymem-ctx").textContent = s.hymem.ctx;
+  document.getElementById("hymem-status").textContent = s.hymem.status;
+  document.getElementById("hymem-sig").style.width = s.hymem.sig + "%";
+  document.getElementById("hymem-noi").style.width = (100 - s.hymem.sig) + "%";
+  document.getElementById("hymem-log").innerHTML = s.hymem.log;
+  document.getElementById("hymem-note").textContent = s.hymem.note;
+}
+
+document.querySelectorAll("#stage-buttons .seg-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#stage-buttons .seg-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderStage(Number(btn.dataset.stage));
+  });
+});
+renderStage(0);
+
+const BENCHMARKS = {
+  gaia: [
+    { name: "HyMem", acc: 66.7, tok: "111.2k", ours: true },
+    { name: "ReSum", acc: 60.6, tok: "235.8k" },
+    { name: "ReAct", acc: 56.7, tok: "347.0k" },
+    { name: "Summary", acc: 51.2, tok: "509.2k" },
+    { name: "A-Mem", acc: 49.6, tok: "353.1k" },
+    { name: "Thread", acc: 35.4, tok: "64.5k" }
+  ],
+  bcp: [
+    { name: "HyMem", acc: 61.3, tok: "395.7k", ours: true },
+    { name: "ReAct", acc: 56.7, tok: "233.8k" },
+    { name: "ReSum", acc: 43.3, tok: "233.8k" },
+    { name: "Summary", acc: 42.0, tok: "341.3k" },
+    { name: "A-Mem", acc: 36.7, tok: "209.3k" },
+    { name: "Thread", acc: 26.7, tok: "131.5k" }
+  ]
+};
+
+function renderBench(key) {
+  const rows = BENCHMARKS[key];
+  let html = `<div class="bench-row head"><div>方法</div><div>Pass@1 对比</div><div class="num">Pass@1</div><div class="num">中位 Token</div></div>`;
+  rows.forEach(r => {
+    const color = r.ours ? "#2f6f4e" : "#94a3b8";
+    html += `
+      <div class="bench-row">
+        <div class="method-name ${r.ours ? "ours" : ""}">${r.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${r.acc}%; background:${color};"></div></div>
+        <div class="num" style="${r.ours ? "font-weight:700;color:#2f6f4e;" : ""}">${r.acc.toFixed(1)}%</div>
+        <div class="num">${r.tok}</div>
+      </div>`;
+  });
+  document.getElementById("bench-table").innerHTML = html;
+}
+
+document.querySelectorAll("#bench-buttons .seg-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#bench-buttons .seg-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    renderBench(btn.dataset.bench);
+  });
+});
+renderBench("gaia");
+
+const lb = document.getElementById("lightbox");
+const lbImg = document.getElementById("lightbox-img");
+document.querySelectorAll(".zoomable").forEach(img => {
+  img.addEventListener("click", () => { lbImg.src = img.src; lb.classList.add("open"); });
+});
+lb.addEventListener("click", () => lb.classList.remove("open"));
+</script>
+</body>
+</html>

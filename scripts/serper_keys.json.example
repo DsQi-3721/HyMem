@@ -1,0 +1,10 @@
+{
+  "_comment": "Serper API key pool — copy this file to scripts/serper_keys.json and fill in your real keys. SerperSearch reads from this pool when available; on 429/quota errors it auto-rotates to the next non-exhausted key. The 'exhausted_indices' field is updated by the runtime — leave it [] in fresh configs.",
+  "keys": [
+    "PASTE_PRIMARY_SERPER_KEY_HERE",
+    "PASTE_BACKUP_KEY_1_HERE",
+    "PASTE_BACKUP_KEY_2_HERE"
+  ],
+  "current_index": 0,
+  "exhausted_indices": []
+}

@@ -1,0 +1,86 @@
+{
+  "panel_a": {
+    "hymem": {
+      "gaia_x": 111220.0,
+      "gaia_pass1": 0.6666666666666666,
+      "bcp_x": 395743.0,
+      "bcp_pass1": 0.6133333333333333
+    },
+    "resum": {
+      "gaia_x": 235764.0,
+      "gaia_pass1": 0.6062992125984252,
+      "bcp_x": 233762.0,
+      "bcp_pass1": 0.43333333333333335
+    },
+    "thread": {
+      "gaia_x": 64457.0,
+      "gaia_pass1": 0.3543307086614173,
+      "bcp_x": 131536.5,
+      "bcp_pass1": 0.26666666666666666
+    },
+    "amem": {
+      "gaia_x": 353093.0,
+      "gaia_pass1": 0.49606299212598426,
+      "bcp_x": 209251.5,
+      "bcp_pass1": 0.36666666666666664
+    },
+    "react": {
+      "gaia_x": 346982.0,
+      "gaia_pass1": 0.5669291338582677,
+      "bcp_x": 233754.5,
+      "bcp_pass1": 0.5666666666666667
+    },
+    "summary": {
+      "gaia_x": 509152.0,
+      "gaia_pass1": 0.5118110236220472,
+      "bcp_x": 341330.0,
+      "bcp_pass1": 0.42
+    }
+  },
+  "panel_b": {
+    "hymem": {
+      "gaia_x": 28.0,
+      "gaia_pass1": 0.6666666666666666,
+      "bcp_x": 165.5,
+      "bcp_pass1": 0.6133333333333333
+    },
+    "resum": {
+      "gaia_x": 15.0,
+      "gaia_pass1": 0.6062992125984252,
+      "bcp_x": 9.0,
+      "bcp_pass1": 0.43333333333333335
+    },
+    "thread": {
+      "gaia_x": 3.0,
+      "gaia_pass1": 0.3543307086614173,
+      "bcp_x": 5.0,
+      "bcp_pass1": 0.26666666666666666
+    },
+    "amem": {
+      "gaia_x": 17.0,
+      "gaia_pass1": 0.49606299212598426,
+      "bcp_x": 8.0,
+      "bcp_pass1": 0.36666666666666664
+    },
+    "react": {
+      "gaia_x": 21.0,
+      "gaia_pass1": 0.5669291338582677,
+      "bcp_x": 8.0,
+      "bcp_pass1": 0.5666666666666667
+    },
+    "summary": {
+      "gaia_x": 25.0,
+      "gaia_pass1": 0.5118110236220472,
+      "bcp_x": 10.0,
+      "bcp_pass1": 0.42
+    }
+  },
+  "stat_legend": {
+    "benchmarks": "GAIA filled marker and BrowseComp+ hollow marker",
+    "encoding": "marker shape = method; fill = benchmark; dashed line = same-method trajectory across benchmarks",
+    "panel_a_x": "median(total_tokens) per (method, benchmark)",
+    "panel_b_x": "median(tool_calls_atomic) per (method, benchmark), log scale",
+    "y": "mean(Pass@1) per (method, benchmark)",
+    "source_data": "HyMem/data/figure3/per_task.csv GAIA + HyMem/data/figure4/per_task.csv BrowseComp+"
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "panel_a_token_pareto": {
+    "hymem": {
+      "x_q1": 136803.75,
+      "x_median": 395743.0,
+      "x_q3": 924939.0,
+      "acc_mean": 0.6133333333333333,
+      "acc_lo": 0.5333333333333333,
+      "acc_hi": 0.6933333333333334,
+      "n": 150
+    },
+    "resum": {
+      "x_q1": 131088.0,
+      "x_median": 233762.0,
+      "x_q3": 284715.5,
+      "acc_mean": 0.43333333333333335,
+      "acc_lo": 0.35333333333333333,
+      "acc_hi": 0.52,
+      "n": 150
+    },
+    "thread": {
+      "x_q1": 63866.5,
+      "x_median": 131536.5,
+      "x_q3": 604642.75,
+      "acc_mean": 0.26666666666666666,
+      "acc_lo": 0.2,
+      "acc_hi": 0.3333333333333333,
+      "n": 150
+    },
+    "amem": {
+      "x_q1": 126577.25,
+      "x_median": 209251.5,
+      "x_q3": 276284.0,
+      "acc_mean": 0.36666666666666664,
+      "acc_lo": 0.2931666666666667,
+      "acc_hi": 0.4533333333333333,
+      "n": 150
+    },
+    "react": {
+      "x_q1": 125908.0,
+      "x_median": 233754.5,
+      "x_q3": 302147.25,
+      "acc_mean": 0.5666666666666667,
+      "acc_lo": 0.48650000000000004,
+      "acc_hi": 0.6533333333333333,
+      "n": 150
+    },
+    "summary": {
+      "x_q1": 170929.0,
+      "x_median": 341330.0,
+      "x_q3": 410149.25,
+      "acc_mean": 0.42,
+      "acc_lo": 0.34,
+      "acc_hi": 0.5,
+      "n": 150
+    }
+  },
+  "panel_b_toolcalls_pareto": {
+    "hymem": {
+      "x_q1": 50.5,
+      "x_median": 165.5,
+      "x_q3": 425.5,
+      "acc_mean": 0.6133333333333333,
+      "acc_lo": 0.5333333333333333,
+      "acc_hi": 0.6933333333333334,
+      "n": 150
+    },
+    "resum": {
+      "x_q1": 7.0,
+      "x_median": 9.0,
+      "x_q3": 11.0,
+      "acc_mean": 0.43333333333333335,
+      "acc_lo": 0.35333333333333333,
+      "acc_hi": 0.52,
+      "n": 150
+    },
+    "thread": {
+      "x_q1": 1.0,
+      "x_median": 5.0,
+      "x_q3": 13.0,
+      "acc_mean": 0.26666666666666666,
+      "acc_lo": 0.2,
+      "acc_hi": 0.3333333333333333,
+      "n": 150
+    },
+    "amem": {
+      "x_q1": 6.0,
+      "x_median": 8.0,
+      "x_q3": 10.0,
+      "acc_mean": 0.36666666666666664,
+      "acc_lo": 0.2931666666666667,
+      "acc_hi": 0.4533333333333333,
+      "n": 150
+    },
+    "react": {
+      "x_q1": 7.0,
+      "x_median": 8.0,
+      "x_q3": 10.0,
+      "acc_mean": 0.5666666666666667,
+      "acc_lo": 0.48650000000000004,
+      "acc_hi": 0.6533333333333333,
+      "n": 150
+    },
+    "summary": {
+      "x_q1": 8.0,
+      "x_median": 10.0,
+      "x_q3": 12.0,
+      "acc_mean": 0.42,
+      "acc_lo": 0.34,
+      "acc_hi": 0.5,
+      "n": 150
+    }
+  },
+  "panel_c_progression_end": {
+    "hymem": {
+      "start_raw": 1494.5,
+      "end_raw_median": 37521.5,
+      "end_growth_median": 36027.0,
+      "end_growth_q1": 7731.5,
+      "end_growth_q3": 106172.75
+    },
+    "hymem_total": {
+      "start_raw": 1494.5,
+      "end_raw_median": 408503.0,
+      "end_growth_median": 407008.5,
+      "end_growth_q1": 140064.25,
+      "end_growth_q3": 937526.5
+    },
+    "resum": {
+      "start_raw": 2474.0,
+      "end_raw_median": 246625.0,
+      "end_growth_median": 244151.0,
+      "end_growth_q1": 136425.0,
+      "end_growth_q3": 299043.0
+    },
+    "amem": {
+      "start_raw": 2512.0,
+      "end_raw_median": 235247.0,
+      "end_growth_median": 232735.0,
+      "end_growth_q1": 134149.0,
+      "end_growth_q3": 296459.25
+    },
+    "react": {
+      "start_raw": 2481.5,
+      "end_raw_median": 245232.0,
+      "end_growth_median": 242750.5,
+      "end_growth_q1": 129278.25,
+      "end_growth_q3": 312522.0
+    }
+  },
+  "stat_legend": {
+    "benchmark": "BrowseComp-Plus (150 tasks per method, single run)",
+    "n_definition": "150 task-runs per method (6 methods)",
+    "panel_a_x": "median(total_tokens) per method",
+    "panel_a_y": "mean(Pass@1) per method",
+    "panel_b_x": "median(tool_calls_atomic) per method",
+    "panel_b_y": "mean(Pass@1) per method",
+    "panel_c_curves": "per-task cumulative LLM API tokens, reconstructed from event_log.token_usage.calls (HyMem) or by tokenizing message prefixes with Qwen2.5-7B-Instruct (baselines); median + IQR shading across tasks per method, normalised to 21 progress grid points then aligned at 0.",
+    "panel_c_methods": "HyMem-Coord = planner-tier calls only; HyMem-Total = all components; ReSum/A-MEM/ReAct = full chat. Thread and Summary omitted from (c) to keep the legend at five entries.",
+    "source_data": "HyMem/data/figure4/per_task.csv, HyMem/data/figure4/context_progression.csv",
+    "test": "none \u2014 descriptive comparison only."
+  }
+}

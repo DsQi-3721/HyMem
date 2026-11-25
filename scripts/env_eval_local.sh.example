@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# 生成侧：指向本地 vLLM
+export OPENAI_BASE_URL="http://localhost:8022/v1"
+export OPENAI_API_KEY=dummy
+export MODEL_NAME=${MODEL_NAME:-"Qwen3-32B"}
+export HYMEM_AUX_MODEL=${HYMEM_AUX_MODEL:-"$MODEL_NAME"}
+export BM_LLM_MODEL=${BM_LLM_MODEL:-"$MODEL_NAME"}
+
+# Judge 侧：指向外部 API（如需本地，则让 JUDGE_* 留空或与 OPENAI_* 相同）
+export JUDGE_BASE_URL=${JUDGE_BASE_URL:-"https://api.deepseek.com/v1"}
+export JUDGE_API_KEY=${JUDGE_API_KEY:-"YOUR_API_KEY"}
+export JUDGE_MODEL=${JUDGE_MODEL:-"deepseek-reasoner"}
+
+
+
+# == Planner 配置（用于规划和 Branch 推理，需要强模型）==
+export HYMEM_PLANNER_BASE_URL=https://api.deepseek.com/v1
+export HYMEM_PLANNER_API_KEY=YOUR_API_KEY
+export HYMEM_PLANNER_MODEL=deepseek-reasoner
+
+# == Executor 配置（执行搜索任务，可用本地模型）==
+export HYMEM_EXECUTOR_BASE_URL=http://localhost:8022/v1
+export HYMEM_EXECUTOR_API_KEY=dummy
+export HYMEM_EXECUTOR_MODEL=Qwen3-32B
+
+# == Memory 配置（压缩上下文，可用本地模型）==
+# 如果不设置，会自动继承 Executor 的配置
+export HYMEM_AUX_BASE_URL=http://localhost:8022/v1
+export HYMEM_AUX_API_KEY=YOUR_API_KEY
+export HYMEM_AUX_MODEL=Qwen3-32B
+
+
+export GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
+export GOOGLE_SEARCH_ENGINE_ID=6223fe73ffc0d4e2d
+
+
+#<script async src="https://cse.google.com/cse.js?cx=6223fe73ffc0d4e2d">
+#</script>
+#<div class="gcse-search"></div>
+export SERPER_KEY=YOUR_SERPER_KEY
+#YOUR_SERPER_KEY
+#YOUR_SERPER_KEY
+
+export JINA_API_KEY=jina_d4278d6a859149ac8f8d2a4a209cefa1kLYOk6Mgn2CpQZkkZ-1cGpwhjccp
+
+export OPENAI_API_KEY='YOUR_API_KEY'
+#YOUR_SERPER_KEY
+#jina_f94f0139b6744fd8bd1a4f6207b87ddcEdtYL1k13_xD-zQEJIJTzUFpRHPC  
+
